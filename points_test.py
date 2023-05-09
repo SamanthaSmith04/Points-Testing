@@ -1,6 +1,6 @@
 ## Points Test code
 ## Samantha Smith
-## Generates a 2D or 3D array of points and uses the Ramer Douglas Peucker algorithm to fit lines to the points
+## Generates a 2D or 3D array of points and uses the Ramer-Douglas-Peucker algorithm to fit lines to the points
 ## UNITS: meters
 
 #imports
