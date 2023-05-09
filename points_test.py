@@ -7,6 +7,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from rdp import rdp
+import time
 
 #main
 def main():
@@ -17,35 +18,51 @@ def main():
     #linear_test(10, 0.0005, 0.5)
 
     print("CURVED")
-    curve_test(5000, 0.0005, 0.1)
+    curve_test(50, 0.0005, 0.01)
 
 
 #creates a straight, diagonal line 
 # y = x
-def linear_test(numberOfPoints, inPointSpacing, outPointSpacing):
-    #pointArray = [[0]* 2 for i in range(numberOfPoints)]
-    xpoints = np.arange(0, numberOfPoints*inPointSpacing, inPointSpacing)
-    ypoints = np.arange(0, numberOfPoints*inPointSpacing, inPointSpacing)
+def linear_test(maxYValue, inPointSpacing, outPointSpacing):
+    #pointArray = [[0]* 2 for i in range(maxYValue)]
+    xpoints = np.arange(0, maxYValue, inPointSpacing)
+    ypoints = np.arange(0, maxYValue, inPointSpacing)
 
     plt.plot(xpoints, ypoints)
     plt.show()
 
 #creates a curved line
-#y = sqrt(x)
-def curve_test(numberOfPoints, inPointSpacing, outPointSpacing):
-    #pointArray = [[0]* 2 for i in range(numberOfPoints)]
-    xpoints = np.arange(0, numberOfPoints*inPointSpacing, inPointSpacing)
+#MaxYValue: highest the points can go
+#inPointSpacing: spacing between generated points in meters
+#outPointSpacing: spacing between the line fit points in meters
+def curve_test(maxYValue, inPointSpacing, outPointSpacing):
+    startTime = time.perf_counter()
+    #pointArray = [[0]* 2 for i in range(maxYValue)]
+    xpoints = np.arange(0, maxYValue, inPointSpacing)
     
-    ypoints = np.arange(0, numberOfPoints*inPointSpacing, inPointSpacing)
+    ypoints = np.arange(0, maxYValue, inPointSpacing)
    
-    xpoints = np.power(xpoints, 3)
-    plt.subplot(1,2,1)
-    plt.plot(xpoints, ypoints)
+    #xpoints = np.power(xpoints, 3)
+    ypoints = np.sin(ypoints)
+    plt.plot(xpoints, ypoints, "ko", markersize=1)
 
     corrections = rdp(np.column_stack((xpoints, ypoints)), epsilon=outPointSpacing)
     print(corrections)  
+    endTime = time.perf_counter()
+    print("Time to run: " + (endTime - startTime).__str__() + "s")
+    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
+    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
+    plt.text(40000, 0, "Number of points: " + maxYValue.__str__())
+    plt.text(40000, 10, "Input point spacing: " + inPointSpacing.__str__())
+    plt.text(40000, 20, "Output point spacing: " + outPointSpacing.__str__())
+    plt.show()
+
+    plt.subplot(1,2,1)
+    plt.plot(xpoints, ypoints, "ko", markersize=1)
+
     plt.subplot(1,2,2)
-    plt.plot(corrections[:,0], corrections[:,1])
+    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
+    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
     plt.show()
     
 
