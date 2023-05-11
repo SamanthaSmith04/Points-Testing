@@ -117,10 +117,11 @@ def curve_test3D(minYValue, maxYValue, inPointSpacing, outPointSpacing, fileName
     ###THESE CAN BE EDITED TO GENERATE NEW GRAPHS###
     xpoints = np.sin(xpoints)
     zpoints = np.cos(zpoints)
-
+    print("Generated " + int((abs(minYValue) + abs(maxYValue))/inPointSpacing).__str__() + " sample data points!")
     ##corrected data points using rdp algorithm
     print("Correcting points...")
     corrections = rdp(np.column_stack((xpoints, ypoints, zpoints)), epsilon=outPointSpacing)
+    print("Correction points generated!")
     
     if fileName != "":
         print("Writing to file...")
@@ -303,6 +304,9 @@ def select_test():
         plt.close('all')
     else:
         exit()
+
+
+
     
 
 #main start
