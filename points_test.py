@@ -192,6 +192,11 @@ def curve_test3DfromFile(outPointSpacing, inputFileName, outputFileName):
     print("Computing corrected points...")
     ##corrected data points using rdp algorithm
     corrections = rdp(np.column_stack((xpoints, ypoints, zpoints)), epsilon=outPointSpacing)
+    print("Correction points generated!")
+
+    print("Calculating delta values...")
+    delta(xpoints, ypoints, zpoints, corrections)
+
     
     #write corrected points to the output file
     if outputFileName != "":
@@ -305,6 +310,30 @@ def select_test():
     else:
         exit()
 
+
+def delta(xpoints, ypoints, zpoints, corrections):
+    index = 0
+    max = np.empty(len(corrections) - 1)
+    sign = np.empty(len(corrections) - 1)
+    for cPos in range(len(corrections) - 1):
+        while xpoints[index] != corrections[cPos+1,0] or ypoints[index] != corrections[cPos+1,1] or zpoints[index] != corrections[cPos+1,2]:
+            dist = np.divide(
+            np.abs(np.linalg.norm(np.cross(corrections[cPos+1] - corrections[cPos], corrections[cPos] - np.column_stack((xpoints[index], ypoints[index], zpoints[index]))))),
+            np.linalg.norm(corrections[cPos+1] - corrections[cPos])) #from rdp python package code, since rdp.pldist is not working
+
+            if (dist > max[cPos]):
+                max[cPos] = dist
+                #checks if the point on the curve is above or below the point on the line
+                if (corrections[cPos,0] > xpoints[index] and corrections[cPos,1] > ypoints[index] and corrections[cPos,1] > zpoints[index]):
+                    sign[cPos] = 1
+                else:
+                    sign[cPos] = -1
+            index += 1
+        print("point 1: " + corrections[cPos].__str__())
+        print("point 2: " + corrections[cPos+1].__str__())
+        print("distance: " + max[cPos].__str__())
+        print("sign:" + sign[cPos].__str__())
+        
 
 
     
