@@ -91,79 +91,10 @@ def curve_test2D(minYValue, maxYValue, inPointSpacing, outPointSpacing, fileName
     plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
     plt.show()
 
-""" 
-    Curve Test 3D Function (generated data)
-    Creates a curved line in 3D space from generated points and then uses the rdp algorithm to fit lines to it
-    Also displays a 2d representation of the points in the xy plane
-
-    Parameters:
-        minYValue: lowest the points can go
-        maxYValue: highest the points can go
-        inPointSpacing: spacing between generated points in meters
-        outPointSpacing: spacing between the line fit points in meters
-        useFile: string, if y the output will be saved to a file, if n then the output will be written to the console  
-    Returns:
-        Prints the corrected points to the console or a file
 """
-def curve_test3D(minYValue, maxYValue, inPointSpacing, outPointSpacing, fileName):
-    if (fileName != ""):
-        outFile = open(fileName, "w")
-    startTime = time.perf_counter()
-    fig = plt.figure().add_subplot(projection='3d')
-    ##initial data points
-    print("Generating points...")
-    xpoints = np.arange(minYValue, maxYValue, inPointSpacing)
-    ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
-    zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
-
-    ###THESE CAN BE EDITED TO GENERATE NEW GRAPHS###
-    xpoints = np.sin(xpoints)
-    #ypoints = np.cos(ypoints)
-    #ypoints = np.multiply(ypoints, 10)
-    print("Generated " + int((abs(minYValue) + abs(maxYValue))/inPointSpacing).__str__() + " sample data points!")
-    ##corrected data points using rdp algorithm
-    print("Correcting points...")
-    corrections = rdp.rdp(np.column_stack((xpoints, ypoints, zpoints)), epsilon=outPointSpacing)
-    print("Correction points generated!")
-    
-    if fileName != "":
-        print("Writing to file...")
-        for i in range(len(corrections)):
-            outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
-        outFile.close()
-    else:
-        print(corrections)  
-    endTime = time.perf_counter()
-    print("Time to run: " + (endTime - startTime).__str__() + "s")
-    print("Number of points used in correction: " + len(corrections).__str__())
-
-    ##plot overlaid graphs
-    fig.plot3D(xpoints, ypoints, zpoints, "ko", markersize=1)
-    fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "ro", markersize=5)
-    fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "r", markersize=5)
-    
-    plt.show()
-
-    ##plot side by side graphs
-    plt.subplot(1,3,1)
-    plt.title("Original Data Points")
-    plt.plot(xpoints, ypoints, "ko", markersize=1)
-    plt.subplot(1,3,2)
-    plt.title("Correction Points")
-    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
-    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
-    plt.subplot(1,3,3)
-    plt.title("Original and Correction Points Overlaid")
-    plt.plot(xpoints, ypoints, "ko", markersize=1)
-    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
-    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
-    plt.tight_layout(pad=3)
-    plt.show()
-    
-
-"""
-    Curve Test 3D Function (from a file)
-    Reads in a set of points from a file selected by the user and then uses the rdp algorithm to fit lines to it
+    Curve Test 3D Function 
+    Reads in a set of points from a file selected by the user or generates its own points for testing purposes and then uses the rdp algorithm to fit lines to it
+    Also calculates the delta values between each corrected point and outputs them to a file or the console
     Is able to output data to either a file selected by the user or the console
 
     Parameters:
@@ -174,7 +105,7 @@ def curve_test3D(minYValue, maxYValue, inPointSpacing, outPointSpacing, fileName
         Prints the corrected points to the console or a file with the delta values between each point
         File formatting: [x, y, z, delta]
 """
-def curve_test3DfromFile(outPointSpacing, inputFileName, outputFileName):
+def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxYValue, inPointSpacing):
     xpoints = []
     ypoints = []
     zpoints = []
@@ -185,15 +116,26 @@ def curve_test3DfromFile(outPointSpacing, inputFileName, outputFileName):
     startTime = time.perf_counter()
     fig = plt.figure().add_subplot(projection='3d')
 
-    #read in data from the input file
-    print("Reading in data from " + inputFileName + "...")
-    inFile = open(inputFileName, "r")
-    for line in inFile:
-        line = line.split()
-        xpoints.append(float(line[0]))
-        ypoints.append(float(line[1]))
-        zpoints.append(float(line[2]))
-    inFile.close()
+    if (inputFileName != ""):
+        #read in data from the input file
+        print("Reading in data from " + inputFileName + "...")
+        inFile = open(inputFileName, "r")
+        for line in inFile:
+            line = line.split()
+            xpoints.append(float(line[0]))
+            ypoints.append(float(line[1]))
+            zpoints.append(float(line[2]))
+        inFile.close()
+    else:
+        print("Generating points...")
+        xpoints = np.arange(minYValue, maxYValue, inPointSpacing)
+        ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
+        zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
+
+        ###THESE CAN BE EDITED TO GENERATE NEW GRAPHS###
+        xpoints = np.sin(xpoints)
+        #ypoints = np.cos(ypoints)
+        #ypoints = np.multiply(ypoints, 10)
 
     print("Computing corrected points...")
     ##corrected data points using rdp algorithm
@@ -247,7 +189,6 @@ def curve_test3DfromFile(outPointSpacing, inputFileName, outputFileName):
     plt.tight_layout(pad=3)
     plt.show()
 
-
 """
     Select Test Function
     Allows the user to select which test they want to run and 
@@ -256,6 +197,10 @@ def curve_test3DfromFile(outPointSpacing, inputFileName, outputFileName):
 def select_test():
     inFileName = ""
     outFileName = ""
+    miny = 0
+    maxy = 0
+    inPointSpacing = 0
+    outPointSpacing = 0
     while True:
         print("Select a test to run:")
         print("1. Linear Test")
@@ -300,10 +245,7 @@ def select_test():
             curve_test2D(miny, maxy, inPointSpacing, outPointSpacing, outFileName)
             break
         elif selection == "3":
-            if (inFileName != ""):
-                curve_test3DfromFile(outPointSpacing, inFileName, outFileName)
-            else:
-                curve_test3D(miny, maxy, inPointSpacing, outPointSpacing, outFileName)
+            curve_test3D(outPointSpacing, inFileName, outFileName, miny, maxy, inPointSpacing)
             break
         
     print("Done!")
@@ -338,8 +280,7 @@ def delta(xpoints, ypoints, zpoints, corrections):
         print("distance: " + max[cPos].__str__())
     print("Delta values calculated!")
     return max
-        
-    
+
 
 #main start
 if __name__ == '__main__':
