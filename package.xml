@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>points_testing</name>
+  <version>0.1.0</version>
+  <description>
+    <!-- TODO write description -->
+    <p>The points_test package</p>
+  </description>
+
+  <!-- META DATA -->
+  <license>Apache 2.0</license>
+  <author>Samantha Smith</author>
+  <maintainer email="smith.15485@osu.edu">Samantha Smith (AIMS Lab @ The Ohio State University)</maintainer>
+
+  <!-- DEPENDENCIES -->
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>rviz</exec_depend>
+
+  <!-- PACKAGE IS NOT ARCHITECTURE-SPECIFIC ONCE COMPILED-->
+  <export>
+    <architecture_independent/>
+  </export>
+</package>

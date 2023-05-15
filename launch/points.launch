@@ -1,0 +1,6 @@
+<launch>
+    <node name="rviz" pkg="rviz" type="rviz" respawn="false" args="-d $(find points_testing)/config/rvizconfig.rviz" />
+   <!-- 
+    <node pkg="Points-Testing" name="points_rviz" type="points_rviz_test.py" output="screen"/>        
+-->
+</launch>

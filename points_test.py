@@ -131,10 +131,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
         xpoints, ypoints, zpoints = generatePoints(minYValue, maxYValue, inPointSpacing)
         print("Points generated!")
 
-    print("Computing corrected points...")
-    ##corrected data points using rdp algorithm
-    corrections = rdp.rdp(np.column_stack((xpoints, ypoints, zpoints)), epsilon=outPointSpacing)
-    print("Correction points generated!")
+    corrections = correctPoints(np.column_stack((xpoints, ypoints, zpoints)), outPointSpacing)
 
     print("Calculating delta values...")
     max = delta(xpoints, ypoints, zpoints, corrections)
@@ -283,9 +280,18 @@ def generatePoints(minYValue, maxYValue, inPointSpacing):
 
     ### THESE CAN BE EDITED TO GENERATE NEW GRAPHS ###
     ypoints = np.cos(ypoints)
-    #xpoints = np.sin(xpoints)
+    xpoints = np.sin(xpoints)
     
     return xpoints, ypoints, zpoints
+
+def correctPoints(points, outPointSpacing):
+    print("Computing corrected points...")
+    ##corrected data points using rdp algorithm
+    corrections = rdp.rdp(points, epsilon=outPointSpacing)
+    print("Correction points generated!")
+
+    return corrections
+
 #main start
 if __name__ == '__main__':
     main()
