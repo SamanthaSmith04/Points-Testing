@@ -132,10 +132,9 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
         ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
         zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
 
-        ###THESE CAN BE EDITED TO GENERATE NEW GRAPHS###
-        xpoints = np.sin(xpoints)
-        #ypoints = np.cos(ypoints)
-        #ypoints = np.multiply(ypoints, 10)
+        ### THESE CAN BE EDITED TO GENERATE NEW GRAPHS ###
+        ypoints = np.cos(ypoints)
+        #xpoints = np.sin(xpoints)
 
     print("Computing corrected points...")
     ##corrected data points using rdp algorithm
@@ -151,16 +150,17 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
         deltaOutput = outputFileName.split(".")[0] + "_delta.txt"
         deltaFile = open(deltaOutput, "w")
         print("Writing corrected points to " + outputFileName + "...")
-        for i in range(len(corrections)):
+        for i in range(len(corrections)-1):
             outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
             deltaFile.write(max[i].__str__() + "\n")
+        outFile.write(corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
         outFile.close()
         deltaFile.close()
     else:
         for i in range(len(corrections)-1):
             print(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__())
-            print(max[i].__str__())
-        print("delta: " + corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
+            print("delta: " + max[i].__str__())
+        print(corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
 
     endTime = time.perf_counter()
     print("Time to run: " + (endTime - startTime).__str__() + "s")
