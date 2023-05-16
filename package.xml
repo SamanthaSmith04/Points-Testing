@@ -16,6 +16,7 @@
   <!-- DEPENDENCIES -->
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>rviz</exec_depend>
+  <buildtool_depend>rospy</buildtool_depend>
 
   <!-- PACKAGE IS NOT ARCHITECTURE-SPECIFIC ONCE COMPILED-->
   <export>

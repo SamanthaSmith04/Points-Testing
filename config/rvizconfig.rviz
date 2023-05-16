@@ -53,7 +53,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: visualization_marker_array
+      Marker Topic: points
       Name: MarkerArray
       Namespaces:
         {}
@@ -61,7 +61,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: visualization_marker_array
+      Marker Topic: correction_points
       Name: MarkerArray
       Namespaces:
         {}
@@ -69,7 +69,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: visualization_marker_array
+      Marker Topic: correction_lines
       Name: MarkerArray
       Namespaces:
         {}

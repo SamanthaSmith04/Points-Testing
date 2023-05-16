@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
-
+import sys
+#sources ros so that packages can be found
+sys.path.append('/opt/ros/noetic/lib/python3/dist-packages')
 import rospy
 import rospkg
 
@@ -14,7 +16,7 @@ def main():
     pub = rospy.Publisher('/points', MarkerArray, queue_size=1000)
     pubCorrections = rospy.Publisher('/correctionPoints', MarkerArray, queue_size=1000)
     pubLines = rospy.Publisher('/correctionLines', MarkerArray, queue_size=1000)
-
+    
     dataPointsx, dataPointsy, dataPointsz = generatePoints(0, 10, 0.05)
     CPoints = correctPoints(np.column_stack((dataPointsx, dataPointsy, dataPointsz)), 0.5)
     points= MarkerArray()
@@ -24,6 +26,7 @@ def main():
     ##DATA POINTS
     for i in range(len(dataPointsz)):
         point = Marker()
+        
         point.type = point.SPHERE
         point.header.frame_id = "map"
         point.id = i
@@ -44,7 +47,7 @@ def main():
         point.color.g = 0
         point.color.b = 1.0 * i/len(dataPointsz)
         point.color.a = 1
-
+        
         points.markers.append(point)
 
     ##CORRECTION POINTS

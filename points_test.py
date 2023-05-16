@@ -25,7 +25,7 @@ def linear_test(maxYValue, inPointSpacing, outPointSpacing, fileName):
     #pointArray = [[0]* 2 for i in range(maxYValue)]
     xpoints = np.arange(0, maxYValue, inPointSpacing)
     ypoints = np.arange(0, maxYValue, inPointSpacing)
-
+    
     plt.plot(xpoints, ypoints)
     plt.show()
 
