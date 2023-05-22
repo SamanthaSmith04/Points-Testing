@@ -1,7 +1,7 @@
 <launch>
     <arg name="outputFile" default=""/>
     <arg name="inputFile" default=""/>
-    <node pkg="points_testing" name="points_test" type="points_test.py" output="screen">
+    <node pkg="points_testing" name="points_corrector" type="points_corrector.py" output="screen">
         <param name="outputFile" value="$(arg outputFile)"/>
         <param name="inputFile" value="$(arg inputFile)"/>
     </node>

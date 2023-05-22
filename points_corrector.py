@@ -27,93 +27,6 @@ def main():
     print("points generated!")
 
 
-
-#creates a straight, diagonal line 
-# y = x
-def linear_test(maxYValue, inPointSpacing, outPointSpacing, fileName):
-    #pointArray = [[0]* 2 for i in range(maxYValue)]
-    xpoints = np.arange(0, maxYValue, inPointSpacing)
-    ypoints = np.arange(0, maxYValue, inPointSpacing)
-    
-    plt.plot(xpoints, ypoints)
-    plt.show()
-
-#creates a curved line
-#MaxYValue: highest the points can go
-#inPointSpacing: spacing between generated points in meters
-#outPointSpacing: spacing between the line fit points in meters
-"""
-    Curve Test Function
-    Creates a curved line and then uses the rdp algorithm to fit lines to it
-    
-    Parameters:
-        minYValue: lowest the points can go
-        maxYValue: highest the points can go
-        inPointSpacing: spacing between generated points in meters
-        outPointSpacing: spacing between the line fit points in meters
-        useFile: string, if y the output will be saved to a file, if n then the output will be written to the console
-    NOTE: For future use, the min and max y values and the point spacing wont be necessary since it will 
-    just have to read in the points from a file, rather than generate them
-    
-"""
-def curve_test2D(minYValue, maxYValue, inPointSpacing, outPointSpacing, fileName):
-    if (fileName != ""):
-        outFile = open(fileName, "w")
-
-    startTime = time.perf_counter()
-    #pointArray = [[0]* 2 for i in range(maxYValue)]
-    ##initial data points
-    xpoints = np.arange(minYValue, maxYValue, inPointSpacing)
-    ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
-
-    xpoints = np.sin(xpoints)
-
-    ##corrected data points using rdp algorithm
-    corrections = rdp_algorithm.rdp_run(np.column_stack((xpoints, ypoints)), epsilon=outPointSpacing)
-    
-    if fileName != "":
-        for i in range(len(corrections)):
-            outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
-        outFile.close()
-    else:
-        print(corrections)  
-    endTime = time.perf_counter()
-    print("Time to run: " + (endTime - startTime).__str__() + "s")
-
-    ##plot overlaid graphs
-    plt.plot(xpoints, ypoints, "ko", markersize=1)
-    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
-    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
-    plt.text(40000, 00, "Maximum Y values: " + maxYValue.__str__())
-    plt.text(40000, 10, "Minimum Y values: " + minYValue.__str__())
-    plt.text(40000, 20, "Input point spacing: " + inPointSpacing.__str__())
-    plt.text(40000, 30, "Output point spacing: " + outPointSpacing.__str__())
-    plt.show()
-
-    ##plot side by side graphs
-    plt.subplot(1,2,1)
-    plt.title("Original Data Points")
-    plt.plot(xpoints, ypoints, "ko", markersize=1)
-    plt.subplot(1,2,2)
-    plt.title("Correction Points")
-    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
-    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
-    plt.show()
-
-"""
-    Curve Test 3D Function 
-    Reads in a set of points from a file selected by the user or generates its own points for testing purposes and then uses the rdp algorithm to fit lines to it
-    Also calculates the delta values between each corrected point and outputs them to a file or the console
-    Is able to output data to either a file selected by the user or the console
-
-    Parameters:
-        outPointSpacing: spacing between the line fit points in meters
-        inputFileName: name of the file to read in data from
-        outputFileName: name of the file to output data to
-    Returns:
-        Prints the corrected points to the console or a file with the delta values between each point
-        File formatting: [x, y, z, delta]
-"""
 def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxYValue, inPointSpacing):
     xpoints = []
     ypoints = []
@@ -142,7 +55,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
         print("Points generated!")
 
     corrections = correctPoints(np.column_stack((xpoints, ypoints, zpoints)), outPointSpacing)
-    print(corrections)
+
     print("Calculating delta values...")
     max = delta(xpoints, ypoints, zpoints, corrections)
 
@@ -160,6 +73,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
         deltaFile.close()
     else:
         for i in range(len(corrections)-1):
+            print(corrections)
             print(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__())
             print("delta: " + max[i].__str__())
         print(corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
@@ -196,15 +110,16 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     Allows the user to select which test they want to run and 
     which values should be used as input
 """
+
 def select_test():
     miny = 0
     maxy = 0
     inPointSpacing = 0
     outPointSpacing = 0
 
-    inFileName = rospy.get_param('/points_test/inputFile')
+    inFileName = rospy.get_param('/points_corrector/inputFile')
 
-    outFileName = rospy.get_param('/points_test/outputFile')
+    outFileName = rospy.get_param('/points_corrector/outputFile')
     if (inFileName == ""):
         print("Values for data generation (units - meters): ")
         print("Minimum Y Value for data generation: ")
@@ -224,7 +139,7 @@ def delta(xpoints, ypoints, zpoints, corrections):
     max = np.zeros(len(corrections) - 1)
     for cPos in range(len(corrections) - 1):
         while xpoints[index] != corrections[cPos+1,0] or ypoints[index] != corrections[cPos+1,1] or zpoints[index] != corrections[cPos+1,2]:
-            dist = rdp_algorithm.perpendicular_distance([xpoints[index], ypoints[index], zpoints[index]], corrections[cPos], corrections[cPos+1])
+            dist = rdp_algorithm.perpendicular_distance(np.column_stack((xpoints[index], ypoints[index], zpoints[index])), corrections[cPos], corrections[cPos+1])
             if (abs(dist) > abs(max[cPos])):
                 max[cPos] = dist
             index += 1
@@ -251,7 +166,6 @@ def correctPoints(points, outPointSpacing):
     ##corrected data points using rdp algorithm
     corrections = rdp_algorithm.rdp_run(points, epsilon=outPointSpacing)
     print("Correction points generated!")
-
     return corrections
 
 #main start

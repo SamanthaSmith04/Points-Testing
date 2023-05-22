@@ -4,7 +4,6 @@ import os
 #sources ros so that packages can be found
 sys.path.append('/opt/ros/noetic/lib/python3/dist-packages')
 import rospy
-import rospkg
 
 from visualization_msgs.msg import MarkerArray
 from visualization_msgs.msg import Marker
@@ -12,7 +11,7 @@ from geometry_msgs.msg import Point
 
 import numpy as np
 
-from points_test import *
+from scripts.points_test import *
 
 def main():
     file_path = os.path.dirname(os.path.realpath(__file__)) + "/points_data/"
