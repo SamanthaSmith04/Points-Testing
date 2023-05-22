@@ -23,7 +23,9 @@ Args for both launch files:
 inputFile - the input file name. The path will be points_data/[fileName]
 
 outputFile - the output file name. The path will be points_data/[fileName]
- 
+
+<br> 
+
 To run the MatPlotLib calculations run <code>roslaunch points_terminal.launch</code> (located in the launch folder)
  
 To run the RVIZ calculations do <code>roslaunch points_rviz.launch</code> (located in the launch folder)
