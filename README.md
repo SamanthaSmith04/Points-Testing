@@ -17,10 +17,14 @@ Now install the required packages using <code>pip install -r requirements.txt</c
 </p>
 
 Source the virtual enviroment using <code>source venv/bin/activate</code> 
+
+Args for both launch files:
+inputFile - the input file name. The path will be points_data/[fileName]
+outPut - the output file name. The path will be points_data/[fileName]
  
-To run the MatPlotLib calculations, just run the python file with <code>python3 points_test.py</code>
+To run the MatPlotLib calculations run <code>roslaunch points_terminal.launch</code> (located in the launch folder)
  
-To run the RVIZ calculations do <code>roslaunch points.launch</code> (located in the launch folder)
+To run the RVIZ calculations do <code>roslaunch points_rviz.launch</code> (located in the launch folder)
 
 </p>
 
