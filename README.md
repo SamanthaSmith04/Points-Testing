@@ -20,7 +20,8 @@ Source the virtual enviroment using <code>source venv/bin/activate</code>
 
 Args for both launch files:
 inputFile - the input file name. The path will be points_data/[fileName]
-outPut - the output file name. The path will be points_data/[fileName]
+
+outputFile - the output file name. The path will be points_data/[fileName]
  
 To run the MatPlotLib calculations run <code>roslaunch points_terminal.launch</code> (located in the launch folder)
  
