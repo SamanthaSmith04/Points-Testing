@@ -1,3 +1,10 @@
+#! /usr/bin/env python3
+
+import sys
+import os
+#sources ros so that packages can be found
+sys.path.append('/opt/ros/noetic/lib/python3/dist-packages')
+
 ## Points Test code
 ## Samantha Smith
 ## Generates a 2D or 3D array of points and uses the Ramer-Douglas-Peucker algorithm to fit lines to the points
@@ -8,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import rdp
 import time
+import rospy
 
 #main
 def main():
@@ -15,6 +23,7 @@ def main():
     print("                     Point Tests                     ")
     print("=====================================================")
     select_test()
+    
     print("points generated!")
 
 
@@ -109,9 +118,10 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     xpoints = []
     ypoints = []
     zpoints = []
+    file_path = os.path.dirname(os.path.realpath(__file__)) + "/points_data/"
     #opens the output file if the user wants to save the data
     if (outputFileName != ""):
-        outFile = open(outputFileName, "w")
+        outFile = open(file_path + outputFileName, "w")
 
     startTime = time.perf_counter()
     fig = plt.figure().add_subplot(projection='3d')
@@ -119,7 +129,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     if (inputFileName != ""):
         #read in data from the input file
         print("Reading in data from " + inputFileName + "...")
-        inFile = open(inputFileName, "r")
+        inFile = open(file_path + inputFileName, "r")
         for line in inFile:
             line = line.split()
             xpoints.append(float(line[0]))
@@ -140,7 +150,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     #write corrected points to the output file
     if outputFileName != "":
         deltaOutput = outputFileName.split(".")[0] + "_delta.txt"
-        deltaFile = open(deltaOutput, "w")
+        deltaFile = open(file_path + deltaOutput, "w")
         print("Writing corrected points to " + outputFileName + "...")
         for i in range(len(corrections)-1):
             outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
@@ -185,6 +195,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     Select Test Function
     Allows the user to select which test they want to run and 
     which values should be used as input
+"""
 """
 def select_test():
     inFileName = ""
@@ -256,7 +267,29 @@ def select_test():
         plt.close('all')
     else:
         exit()
+"""
+def select_test():
+    miny = 0
+    maxy = 0
+    inPointSpacing = 0
+    outPointSpacing = 0
 
+    inFileName = rospy.get_param('/points_test/inputFile')
+
+    outFileName = rospy.get_param('/points_test/outputFile')
+    if (inFileName == ""):
+        print("Values for data generation (units - meters): ")
+        print("Minimum Y Value for data generation: ")
+        miny = float(input())
+        print("Maximum Y Value for data generation: ")
+        maxy = float(input())
+        print("Input point spacing: ")
+        inPointSpacing = float(input())
+    print("Output point spacing: ")
+    outPointSpacing = float(input())
+
+    curve_test3D(outPointSpacing, inFileName, outFileName, miny, maxy, inPointSpacing)
+    
 
 def delta(xpoints, ypoints, zpoints, corrections):
     index = 0
@@ -267,9 +300,10 @@ def delta(xpoints, ypoints, zpoints, corrections):
             if (abs(dist) > abs(max[cPos])):
                 max[cPos] = dist
             index += 1
+        """
         print("point 1: " + corrections[cPos].__str__())
         print("point 2: " + corrections[cPos+1].__str__())
-        print("distance: " + max[cPos].__str__())
+        print("distance: " + max[cPos].__str__())"""
     print("Delta values calculated!")
     return max
 
