@@ -19,6 +19,7 @@ Now install the required packages using <code>pip install -r requirements.txt</c
 Source the virtual enviroment using <code>source venv/bin/activate</code> 
 
 Args for both launch files:
+
 inputFile - the input file name. The path will be points_data/[fileName]
 
 outputFile - the output file name. The path will be points_data/[fileName]
