@@ -3,7 +3,9 @@
 import sys
 import os
 #sources ros so that packages can be found
-sys.path.append('/opt/ros/noetic/lib/python3/dist-packages')
+ros_version = os.environ.get('ROS_DISTRO')
+sys.path.append('/opt/ros/' + ros_version + '/lib/python3/dist-packages')
+
 
 ## Points Test code
 ## Samantha Smith
