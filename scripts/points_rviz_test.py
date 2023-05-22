@@ -11,7 +11,7 @@ from geometry_msgs.msg import Point
 
 import numpy as np
 
-from scripts.points_test import *
+from points_test import *
 
 def main():
     file_path = os.path.dirname(os.path.realpath(__file__)) + "/points_data/"
