@@ -31,25 +31,17 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     xpoints = []
     ypoints = []
     zpoints = []
+    
+    global file_path
     file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
-
     #opens the output file if the user wants to save the data
-    if (outputFileName != ""):
-        outFile = open(file_path + outputFileName, "w")
+        
 
     startTime = time.perf_counter()
     fig = plt.figure().add_subplot(projection='3d')
 
     if (inputFileName != ""):
-        #read in data from the input file
-        print("Reading in data from " + inputFileName + "...")
-        inFile = open(file_path + inputFileName, "r")
-        for line in inFile:
-            line = line.split()
-            xpoints.append(float(line[0]))
-            ypoints.append(float(line[1]))
-            zpoints.append(float(line[2]))
-        inFile.close()
+        xpoints, ypoints, zpoints = get_points_from_file(inputFileName)
     else:
         print("Generating points...")
         xpoints, ypoints, zpoints = generatePoints(minYValue, maxYValue, inPointSpacing)
@@ -65,14 +57,8 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     #write corrected points to the output file
     if outputFileName != "":
         deltaOutput = outputFileName.split(".")[0] + "_delta.txt"
-        deltaFile = open(file_path + deltaOutput, "w")
-        print("Writing corrected points to " + outputFileName + "...")
-        for i in range(len(corrections)-1):
-            outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
-            deltaFile.write(max[i].__str__() + "\n")
-        outFile.write(corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
-        outFile.close()
-        deltaFile.close()
+        write_corrections_to_file(corrections, outFile)
+        write_delta_to_file(deltaOutput, max)
     else:
         for i in range(len(corrections)-1):
             print(corrections)
@@ -188,6 +174,34 @@ def generate_raster(inPointSpacing):
     zpoints = np.zeros(len(xpoints))
     return xpoints, ypoints, zpoints
 
+
+def get_points_from_file(inputFileName):
+    xpoints = []
+    ypoints = []
+    zpoints = []
+    #read in data from the input file
+    print("Reading in data from " + inputFileName + "...")
+    inFile = open(file_path + inputFileName, "r")
+    for line in inFile:
+        line = line.split()
+        xpoints.append(float(line[0]))
+        ypoints.append(float(line[1]))
+        zpoints.append(float(line[2]))
+    inFile.close()
+    return xpoints, ypoints, zpoints
+
+def write_corrections_to_file(corrections, outputFileName):
+    outFile = open(file_path + outputFileName, "w")
+    print("Writing corrected points to " + outputFileName + "...")
+    for i in range(len(corrections)):
+        outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
+    outFile.close()
+
+def write_delta_to_file(deltaOutput, deltas):
+    deltaFile = open(file_path + deltaOutput, "w")
+    for i in range (len(deltas)):
+        deltaFile.write(deltas[i].__str__() + "\n")
+    deltaFile.close()
 #main start
 if __name__ == '__main__':
     main()
