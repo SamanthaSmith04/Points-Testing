@@ -27,6 +27,18 @@ def main():
     print("points generated!")
 
 
+"""
+    Curve Test 3D
+    Reads/Generates a list of points to process with the rdp algorithm and plots them using matpltlib
+    Outputs to either a file or the console
+    Parameters:
+        outPointSpacing: the maximum spacing between the original data points and the line between the correction points
+        inputFileName: the name of the file to read the points from
+        outputFileName: the name of the file to write the corrected points to
+        minYValue: the minimum y value to generate points for
+        maxYValue: the maximum y value to generate points for
+        inPointSpacing: the spacing between the points to generate
+"""
 def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxYValue, inPointSpacing):
     points =[]
     
@@ -96,7 +108,6 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     Allows the user to select which test they want to run and 
     which values should be used as input
 """
-
 def select_test():
     miny = 0
     maxy = 0
@@ -119,7 +130,13 @@ def select_test():
 
     curve_test3D(outPointSpacing, inFileName, outFileName, miny, maxy, inPointSpacing)
     
-
+"""
+    Delta function
+    Calculates the delta values for each correction point
+    Parameters:
+        points: the original data points
+        corrections: the corrected data points
+"""
 def delta(points, corrections):
     index = 0
     max = np.zeros(len(corrections) - 1)
@@ -129,13 +146,17 @@ def delta(points, corrections):
             if (abs(dist) > abs(max[cPos])):
                 max[cPos] = dist
             index += 1
-        """
-        print("point 1: " + corrections[cPos].__str__())
-        print("point 2: " + corrections[cPos+1].__str__())
-        print("distance: " + max[cPos].__str__())"""
     print("Delta values calculated!")
     return max
 
+"""
+    Generate Points
+    Generates a set of points to be used in the test
+    Parameters:
+        minYValue: the minimum value for the y axis
+        maxYValue: the maximum value for the y axis
+        inPointSpacing: the spacing between points
+"""
 def generatePoints(minYValue, maxYValue, inPointSpacing):
     xpoints = np.arange(minYValue, maxYValue, inPointSpacing)
     ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
@@ -147,6 +168,13 @@ def generatePoints(minYValue, maxYValue, inPointSpacing):
     
     return np.column_stack((xpoints, ypoints, zpoints))
 
+"""
+    Correct Points
+    Corrects the points using the rdp algorithm
+    Parameters:
+        points: the points to be corrected
+        outPointSpacing: the maximum distance between the original points and the correction line
+"""
 def correctPoints(points, outPointSpacing):
     print("Computing corrected points...")
     ##corrected data points using rdp algorithm
@@ -154,6 +182,12 @@ def correctPoints(points, outPointSpacing):
     print("Correction points generated!")
     return corrections
 
+"""
+    Generate Raster
+    Generates a raster of points to be used in the test
+    Parameters:
+        inPointSpacing: the spacing between points
+"""
 def generate_raster(inPointSpacing):
     segmentx1 = np.arange(0, 3, inPointSpacing)
     seg1len = len(segmentx1)
@@ -172,7 +206,11 @@ def generate_raster(inPointSpacing):
     zpoints = np.zeros(len(xpoints))
     return np.column_stack((xpoints, ypoints, zpoints))
 
-
+"""
+    Read points from a file
+    Parameters:
+        inputFileName: the name of the file to read from
+"""
 def get_points_from_file(inputFileName):
     xpoints = []
     ypoints = []
@@ -188,6 +226,13 @@ def get_points_from_file(inputFileName):
     inFile.close()
     return np.column_stack((xpoints, ypoints, zpoints))
 
+"""
+    Write corrections to a file
+    Outputs the corrected points to a file
+    Parameters:
+        corrections: the corrected points
+        outputFileName: the name of the file to write to
+"""
 def write_corrections_to_file(corrections, outputFileName):
     outFile = open(file_path + outputFileName, "w")
     print("Writing corrected points to " + outputFileName + "...")
@@ -195,11 +240,20 @@ def write_corrections_to_file(corrections, outputFileName):
         outFile.write(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__() + "\n")
     outFile.close()
 
+"""
+    Write delta values to a file
+    Outputs the delta values to a file
+    Parameters:
+        deltaOutput: the name of the file to write to
+        deltas: the delta values
+"""
 def write_delta_to_file(deltaOutput, deltas):
     deltaFile = open(file_path + deltaOutput, "w")
     for i in range (len(deltas)):
         deltaFile.write(deltas[i].__str__() + "\n")
     deltaFile.close()
+
+
 #main start
 if __name__ == '__main__':
     main()
