@@ -67,11 +67,11 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
         write_corrections_to_file(corrections, outputFileName)
         write_delta_to_file(deltaOutput, max)
     else:
+        print("Corrected Points:")
         print(corrections)
+        print("Delta Values:")
         for i in range(len(corrections)-1):
-            print(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__())
-            print("delta: " + max[i].__str__())
-        print(corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
+            print(max[i].__str__())
 
     endTime = time.perf_counter()
     print("Time to run: " + (endTime - startTime).__str__() + "s")
