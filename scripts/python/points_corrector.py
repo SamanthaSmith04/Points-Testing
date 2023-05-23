@@ -109,11 +109,12 @@ def select_test():
     miny = 0
     maxy = 0
     inPointSpacing = 0
-    outPointSpacing = 0
 
     inFileName = rospy.get_param('/points_corrector/inputFile')
 
     outFileName = rospy.get_param('/points_corrector/outputFile')
+
+    outPointSpacing = rospy.get_param('/points_corrector/outPointSpacing')
     if (inFileName == ""):
         print("Values for data generation (units - meters): ")
         print("Minimum Y Value for data generation: ")
@@ -122,8 +123,9 @@ def select_test():
         maxy = float(input())
         print("Input point spacing: ")
         inPointSpacing = float(input())
-    print("Output point spacing: ")
-    outPointSpacing = float(input())
+    if (outPointSpacing == ""):
+        print("Output point spacing: ")
+        outPointSpacing = float(input())
 
     curve_test3D(outPointSpacing, inFileName, outFileName, miny, maxy, inPointSpacing)
     

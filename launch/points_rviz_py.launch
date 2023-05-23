@@ -2,9 +2,11 @@
     <node name="rviz" pkg="rviz" type="rviz" respawn="false" args="-d $(find points_testing)/config/rvizconfig.rviz" />
     <arg name="outputFile" default=""/>
     <arg name="inputFile" default=""/>
+    <arg name="outPointSpacing" default=""/>
     <node pkg="points_testing" name="points_rviz" type="points_rviz_test.py" output="screen">
         <param name="outputFile" value="$(arg outputFile)"/>
         <param name="inputFile" value="$(arg inputFile)"/>
+        <param name="outPointSpacing" value="$(arg outPointSpacing)"/>
     </node>        
 
 </launch>

@@ -139,9 +139,7 @@ def main():
         pubCorrections.publish(correctionPoints)
         pubLines.publish(lines)
         rospy.sleep(1)
-        print("continue? (y/n)")
-        if (input() != "y" and input() != "Y"):
-            exit()
+        break
 
 
 def select_values():
@@ -154,6 +152,7 @@ def select_values():
 
     outFile = rospy.get_param('/points_rviz/outputFile')
     inFile = rospy.get_param('/points_rviz/inputFile')
+    maxOutSpacing = rospy.get_param('/points_rviz/outPointSpacing')
 
     if (inFile == ""):
         print("Values for test data point genereation (units in meters)")
@@ -163,8 +162,9 @@ def select_values():
         maxY = float(input())
         print("Enter maximum input spacing:")
         maxInSpacing = float(input())
-    print("Enter maximum output spacing:")
-    maxOutSpacing = float(input())
+    if (maxOutSpacing == ""):
+        print("Enter maximum output spacing:")
+        maxOutSpacing = float(input())
     print("=====================================")
     
     
