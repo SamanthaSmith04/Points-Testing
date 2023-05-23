@@ -53,6 +53,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     else:
         print("Generating points...")
         xpoints, ypoints, zpoints = generatePoints(minYValue, maxYValue, inPointSpacing)
+        #xpoints, ypoints, zpoints = generate_raster(inPointSpacing)
         print("Points generated!")
 
     corrections = correctPoints(np.column_stack((xpoints, ypoints, zpoints)), outPointSpacing)
@@ -154,10 +155,10 @@ def delta(xpoints, ypoints, zpoints, corrections):
 def generatePoints(minYValue, maxYValue, inPointSpacing):
     xpoints = np.arange(minYValue, maxYValue, inPointSpacing)
     ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
-    #zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
-    zpoints = np.zeros(len(xpoints))
+    zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
+
     ### THESE CAN BE EDITED TO GENERATE NEW GRAPHS ###
-    #ypoints = ypoints**1.001
+    ypoints = ypoints**1.001
     #xpoints = np.sin(xpoints)
     
     return xpoints, ypoints, zpoints
@@ -168,6 +169,24 @@ def correctPoints(points, outPointSpacing):
     corrections = rdp_algorithm.rdp_run(points, epsilon=outPointSpacing)
     print("Correction points generated!")
     return corrections
+
+def generate_raster(inPointSpacing):
+    segmentx1 = np.arange(0, 3, inPointSpacing)
+    seg1len = len(segmentx1)
+    zeros = np.zeros(seg1len)
+    segmenty2 = np.arange(0, 3, inPointSpacing)
+    segmentx2 = np.empty(len(segmenty2))
+    segmentx2 = np.full(len(segmenty2), segmentx1[-1])
+
+    segmentx3 = np.arange(segmentx2[-1], 5, inPointSpacing)
+    segmenty3 = np.empty(len(segmentx3))
+    segmenty3 = np.full(len(segmentx3), segmenty2[-1])
+
+
+    xpoints = np.concatenate((segmentx1, segmentx2, segmentx3))
+    ypoints = np.concatenate((zeros, segmenty2, segmenty3))
+    zpoints = np.zeros(len(xpoints))
+    return xpoints, ypoints, zpoints
 
 #main start
 if __name__ == '__main__':
