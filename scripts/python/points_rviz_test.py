@@ -15,7 +15,7 @@ import numpy as np
 from points_test import *
 
 def main():
-    file_path = os.path.dirname(os.path.realpath(__file__)) + "/points_data/"
+    file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
     rospy.init_node('rviz_points')
     
     pub = rospy.Publisher('/points', MarkerArray, queue_size=1000)

@@ -31,7 +31,8 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     xpoints = []
     ypoints = []
     zpoints = []
-    file_path = os.path.dirname(os.path.realpath(__file__)) + "/points_data/"
+    file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
+
     #opens the output file if the user wants to save the data
     if (outputFileName != ""):
         outFile = open(file_path + outputFileName, "w")
@@ -153,11 +154,11 @@ def delta(xpoints, ypoints, zpoints, corrections):
 def generatePoints(minYValue, maxYValue, inPointSpacing):
     xpoints = np.arange(minYValue, maxYValue, inPointSpacing)
     ypoints = np.arange(minYValue, maxYValue, inPointSpacing)
-    zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
-
+    #zpoints = np.arange(minYValue, maxYValue, inPointSpacing)
+    zpoints = np.zeros(len(xpoints))
     ### THESE CAN BE EDITED TO GENERATE NEW GRAPHS ###
-    ypoints = np.cos(ypoints)
-    xpoints = np.sin(xpoints)
+    #ypoints = ypoints**1.001
+    #xpoints = np.sin(xpoints)
     
     return xpoints, ypoints, zpoints
 
