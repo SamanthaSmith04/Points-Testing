@@ -17,6 +17,9 @@ import rdp_algorithm
 import time
 import rospy
 
+global file_path
+file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
+
 #main
 def main():
     print("=====================================================")
@@ -41,12 +44,6 @@ def main():
 """
 def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxYValue, inPointSpacing):
     points =[]
-    
-    global file_path
-    file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
-    #opens the output file if the user wants to save the data
-        
-
     startTime = time.perf_counter()
     fig = plt.figure().add_subplot(projection='3d')
 
