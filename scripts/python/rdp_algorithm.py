@@ -17,7 +17,7 @@ def rdp_run(points_list, epsilon):
     index = 0
     d=0
     for i in range(1, len(points_list)-1):
-        d = perpendicular_distance(points_list[i,:], points_list[0,:], points_list[-1,:])
+        d = perpendicular_distance(points_list[i], points_list[0], points_list[-1])
         if d > max:
             max = d
             index = i

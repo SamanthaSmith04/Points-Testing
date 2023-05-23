@@ -12,61 +12,46 @@ from geometry_msgs.msg import Point
 
 import numpy as np
 
-from points_test import *
+from points_corrector import *
 
 def main():
+    global file_path
     file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
     rospy.init_node('rviz_points')
     
     pub = rospy.Publisher('/points', MarkerArray, queue_size=1000)
     pubCorrections = rospy.Publisher('/correctionPoints', MarkerArray, queue_size=1000)
     pubLines = rospy.Publisher('/correctionLines', MarkerArray, queue_size=1000)
-    dataPointsx = []
-    dataPointsy = []
-    dataPointsz = []
+    
+    points =[]
     c_points = []
     deltas = []
     
     while not rospy.is_shutdown():
-        dataPointsx.clear()
-        dataPointsy.clear()
-        dataPointsz.clear()
         select_values()
         if (inFile == ""):
-            dataPointsx, dataPointsy, dataPointsz = generatePoints(minY, maxY, maxInSpacing)
+            points = generatePoints(minY, maxY, maxInSpacing)
         else:
             #read in data from the input file
             print("Reading in data from " + inFile + "...")
-            dataPoints = open(file_path + inFile, "r")
-            for line in dataPoints:
-                line = line.split()
-                dataPointsx.append(float(line[0]))
-                dataPointsy.append(float(line[1]))
-                dataPointsz.append(float(line[2]))
-            dataPoints.close()
+            points = get_points_from_file(inFile)
         c_points.clear()
-        c_points = correctPoints(np.column_stack((dataPointsx, dataPointsy, dataPointsz)), maxOutSpacing)
+        c_points = correctPoints(points, maxOutSpacing)
         deltas.clear()
-        deltas = delta(dataPointsx, dataPointsy, dataPointsz, c_points)
+        deltas = delta(points, c_points)
 
         if (outFile != ""): 
             print("Writing data to " + outFile)
-            output = open(file_path + outFile, 'w+')
-            for i in range(len(c_points)):
-                output.write(str(c_points[i][0]) + " " + str(c_points[i][1]) + " " + str(c_points[i][2]) + "\n")
-            output.close()
+            write_corrections_to_file(c_points, outFile)
             deltaOutput = outFile.split(".")[0] + "_delta.txt"
-            deltaOut = open(file_path + deltaOutput, 'w+')
-            for i in range(len(deltas)):
-                deltaOut.write(deltas[i].__str__() + "\n")
-            deltaOut.close()
+            write_delta_to_file(deltaOutput, deltas)
         
-        points= MarkerArray()
+        graph_points= MarkerArray()
         lines = MarkerArray()
         correctionPoints = MarkerArray()
 
         ##DATA POINTS
-        for i in range(len(dataPointsz)):
+        for i in range(len(points)):
             point = Marker()
             
             point.type = point.SPHERE
@@ -74,9 +59,9 @@ def main():
             point.id = i
             point.action = point.ADD
 
-            point.pose.position.x = dataPointsx[i]
-            point.pose.position.y = dataPointsy[i]   
-            point.pose.position.z = dataPointsz[i]
+            point.pose.position.x = points[i,0]
+            point.pose.position.y = points[i,1]   
+            point.pose.position.z = points[i,2]
             point.pose.orientation.x = 0.0
             point.pose.orientation.y = 0.0
             point.pose.orientation.z = 0.0
@@ -87,10 +72,10 @@ def main():
 
             point.color.r = 0
             point.color.g = 0
-            point.color.b = 1.0 * i/len(dataPointsz)
+            point.color.b = 1.0 * i/len(points)
             point.color.a = 1
             
-            points.markers.append(point)
+            graph_points.markers.append(point)
 
         ##CORRECTION POINTS
         for i in range(len(c_points)):
@@ -150,7 +135,7 @@ def main():
             lines.markers.append(line)
 
         print("Publishing points")
-        pub.publish(points)
+        pub.publish(graph_points)
         pubCorrections.publish(correctionPoints)
         pubLines.publish(lines)
         rospy.sleep(1)

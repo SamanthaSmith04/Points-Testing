@@ -28,9 +28,7 @@ def main():
 
 
 def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxYValue, inPointSpacing):
-    xpoints = []
-    ypoints = []
-    zpoints = []
+    points =[]
     
     global file_path
     file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/points_data/"
@@ -41,27 +39,27 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     fig = plt.figure().add_subplot(projection='3d')
 
     if (inputFileName != ""):
-        xpoints, ypoints, zpoints = get_points_from_file(inputFileName)
+        points = get_points_from_file(inputFileName)
     else:
         print("Generating points...")
-        xpoints, ypoints, zpoints = generatePoints(minYValue, maxYValue, inPointSpacing)
+        points = generatePoints(minYValue, maxYValue, inPointSpacing)
         #xpoints, ypoints, zpoints = generate_raster(inPointSpacing)
         print("Points generated!")
 
-    corrections = correctPoints(np.column_stack((xpoints, ypoints, zpoints)), outPointSpacing)
+    corrections = correctPoints(points, outPointSpacing)
 
     print("Calculating delta values...")
-    max = delta(xpoints, ypoints, zpoints, corrections)
+    max = delta(points, corrections)
 
     
     #write corrected points to the output file
     if outputFileName != "":
         deltaOutput = outputFileName.split(".")[0] + "_delta.txt"
-        write_corrections_to_file(corrections, outFile)
+        write_corrections_to_file(corrections, outputFileName)
         write_delta_to_file(deltaOutput, max)
     else:
+        print(corrections)
         for i in range(len(corrections)-1):
-            print(corrections)
             print(corrections[i,0].__str__() + " " + corrections[i,1].__str__() + " " + corrections[i,2].__str__())
             print("delta: " + max[i].__str__())
         print(corrections[len(corrections)-1,0].__str__() + " " + corrections[len(corrections)-1,1].__str__() + " " + corrections[len(corrections)-1,2].__str__())
@@ -71,7 +69,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     print("Number of points used in correction: " + len(corrections).__str__())
 
     ##plot overlaid graphs
-    fig.plot3D(xpoints, ypoints, zpoints, "ko", markersize=1)
+    fig.plot3D(points[:,0], points[:,1], points[:,2], "ko", markersize=1)
     fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "ro", markersize=5)
     fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "r", markersize=5)
     
@@ -80,14 +78,14 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     ##plot side by side graphs
     plt.subplot(1,3,1)
     plt.title("Original Data Points")
-    plt.plot(xpoints, ypoints, "ko", markersize=1)
+    plt.plot(points[:,0], points[:,1], "ko", markersize=1)
     plt.subplot(1,3,2)
     plt.title("Correction Points")
     plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
     plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
     plt.subplot(1,3,3)
     plt.title("Original and Correction Points Overlaid")
-    plt.plot(xpoints, ypoints, "ko", markersize=1)
+    plt.plot(points[:,0], points[:,1], "ko", markersize=1)
     plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
     plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
     plt.tight_layout(pad=3)
@@ -122,12 +120,12 @@ def select_test():
     curve_test3D(outPointSpacing, inFileName, outFileName, miny, maxy, inPointSpacing)
     
 
-def delta(xpoints, ypoints, zpoints, corrections):
+def delta(points, corrections):
     index = 0
     max = np.zeros(len(corrections) - 1)
     for cPos in range(len(corrections) - 1):
-        while xpoints[index] != corrections[cPos+1,0] or ypoints[index] != corrections[cPos+1,1] or zpoints[index] != corrections[cPos+1,2]:
-            dist = rdp_algorithm.perpendicular_distance(np.column_stack((xpoints[index], ypoints[index], zpoints[index])), corrections[cPos], corrections[cPos+1])
+        while points[index,0] != corrections[cPos+1,0] or points[index,1] != corrections[cPos+1,1] or points[index,2] != corrections[cPos+1,2]:
+            dist = rdp_algorithm.perpendicular_distance(points[index], corrections[cPos], corrections[cPos+1])
             if (abs(dist) > abs(max[cPos])):
                 max[cPos] = dist
             index += 1
@@ -145,9 +143,9 @@ def generatePoints(minYValue, maxYValue, inPointSpacing):
 
     ### THESE CAN BE EDITED TO GENERATE NEW GRAPHS ###
     ypoints = ypoints**1.001
-    #xpoints = np.sin(xpoints)
+    xpoints = np.sin(xpoints)
     
-    return xpoints, ypoints, zpoints
+    return np.column_stack((xpoints, ypoints, zpoints))
 
 def correctPoints(points, outPointSpacing):
     print("Computing corrected points...")
@@ -172,7 +170,7 @@ def generate_raster(inPointSpacing):
     xpoints = np.concatenate((segmentx1, segmentx2, segmentx3))
     ypoints = np.concatenate((zeros, segmenty2, segmenty3))
     zpoints = np.zeros(len(xpoints))
-    return xpoints, ypoints, zpoints
+    return np.column_stack((xpoints, ypoints, zpoints))
 
 
 def get_points_from_file(inputFileName):
@@ -188,7 +186,7 @@ def get_points_from_file(inputFileName):
         ypoints.append(float(line[1]))
         zpoints.append(float(line[2]))
     inFile.close()
-    return xpoints, ypoints, zpoints
+    return np.column_stack((xpoints, ypoints, zpoints))
 
 def write_corrections_to_file(corrections, outputFileName):
     outFile = open(file_path + outputFileName, "w")
