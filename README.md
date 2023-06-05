@@ -24,7 +24,7 @@ inputFile - (string) the input file name (not the path). The path of the file sh
 
 outputFile - (string) the output file name (not the path). The file will be created as points_data/[fileName]
 
-outPointSpacing - (double) the maximum distance that the line between two corrected points can vary from the original points
+outPointSpacing - (double) the maximum distance that the path between two corrected points can vary from the original points
 
 display - (string) defaults to true, putting anything here will disable the graph and only output the corrected points (MatPlotLib only)
 <br> 
