@@ -26,6 +26,7 @@ outputFile - (string) the output file name (not the path). The file will be crea
 
 outPointSpacing - (double) the maximum distance that the line between two corrected points can vary from the original points
 
+display - (string) defaults to true, putting anything here will disable the graph and only output the corrected points (MatPlotLib only)
 <br> 
 
 To run the MatPlotLib calculations run <code>roslaunch points_terminal.launch [args]</code> (located in the launch folder)
