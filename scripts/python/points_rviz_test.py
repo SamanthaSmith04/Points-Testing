@@ -163,7 +163,7 @@ def select_values():
         print("Enter maximum input spacing:")
         maxInSpacing = float(input())
     if (maxOutSpacing == ""):
-        print("Enter maximum output spacing:")
+        print("Enter maximum output spacing (the maximum amount that the corrected path can deviate from the original points):")
         maxOutSpacing = float(input())
     print("=====================================")
     

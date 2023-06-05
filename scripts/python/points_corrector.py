@@ -104,7 +104,7 @@ def select_test():
         print("Input point spacing: ")
         inPointSpacing = float(input())
     if (outPointSpacing == ""):
-        print("Output point spacing: ")
+        print("Output point spacing (the maximum amount that the corrected path can deviate from the original points): ")
         outPointSpacing = float(input())
 
     curve_test3D(outPointSpacing, inFileName, outFileName, miny, maxy, inPointSpacing)
