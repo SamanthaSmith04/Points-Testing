@@ -45,15 +45,14 @@ def main():
 def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxYValue, inPointSpacing):
     points =[]
     startTime = time.perf_counter()
-    fig = plt.figure().add_subplot(projection='3d')
 
     if (inputFileName != ""):
         points = get_points_from_file(inputFileName)
     else:
         print("Generating points...")
-        points = generatePoints(minYValue, maxYValue, inPointSpacing)
-        #xpoints, ypoints, zpoints = generate_raster(inPointSpacing)
-        print("Points generated!")
+        points = generatePoints(minYValue, maxYValue, inPointSpacing) ##GENERATE POINTS
+        #points= generate_raster(inPointSpacing) ##GENERATE RASTER
+        print(len(points).__str__() + " points generated!")
 
     corrections = correctPoints(points, outPointSpacing)
 
@@ -77,28 +76,9 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     print("Time to run: " + (endTime - startTime).__str__() + "s")
     print("Number of points used in correction: " + len(corrections).__str__())
 
-    ##plot overlaid graphs
-    fig.plot3D(points[:,0], points[:,1], points[:,2], "ko", markersize=1)
-    fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "ro", markersize=5)
-    fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "r", markersize=5)
-    
-    plt.show()
-
-    ##plot side by side graphs
-    plt.subplot(1,3,1)
-    plt.title("Original Data Points")
-    plt.plot(points[:,0], points[:,1], "ko", markersize=1)
-    plt.subplot(1,3,2)
-    plt.title("Correction Points")
-    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
-    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
-    plt.subplot(1,3,3)
-    plt.title("Original and Correction Points Overlaid")
-    plt.plot(points[:,0], points[:,1], "ko", markersize=1)
-    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
-    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
-    plt.tight_layout(pad=3)
-    plt.show()
+    display = rospy.get_param('/points_corrector/display')
+    if (display == ""):
+        plot_points(points, corrections)
 
 """
     Select Test Function
@@ -188,21 +168,26 @@ def correctPoints(points, outPointSpacing):
         inPointSpacing: the spacing between points
 """
 def generate_raster(inPointSpacing):
-    segmentx1 = np.arange(0, 3, inPointSpacing)
-    seg1len = len(segmentx1)
-    zeros = np.zeros(seg1len)
-    segmenty2 = np.arange(0, 3, inPointSpacing)
-    segmentx2 = np.empty(len(segmenty2))
-    segmentx2 = np.full(len(segmenty2), segmentx1[-1])
+    x1 = np.arange(0, 5, inPointSpacing)
+    y1 = np.zeros(len(x1))
 
-    segmentx3 = np.arange(segmentx2[-1], 5, inPointSpacing)
-    segmenty3 = np.empty(len(segmentx3))
-    segmenty3 = np.full(len(segmentx3), segmenty2[-1])
+    y2 = np.arange(0, 3, inPointSpacing)
+    x2 = np.full(len(y2), 5)
 
+    x3 = np.arange(3, 5, inPointSpacing)
+    x3 = np.flip(x3)
+    y3 = np.full(len(x3), 3)
 
-    xpoints = np.concatenate((segmentx1, segmentx2, segmentx3))
-    ypoints = np.concatenate((zeros, segmenty2, segmenty3))
-    zpoints = np.zeros(len(xpoints))
+    y4 = np.arange(3, 5, inPointSpacing)
+    x4 = np.full(len(y4), 3)
+
+    x5 = np.arange(3, 7, inPointSpacing)
+    y5 = np.full(len(x5), 5)
+
+    xpoints = np.concatenate((x1, x2, x3, x4, x5))
+    ypoints = np.concatenate((y1, y2, y3, y4, y5))
+    zpoints = np.arange(0, len(xpoints), 1)
+    zpoints = np.divide(zpoints, 10)
     return np.column_stack((xpoints, ypoints, zpoints))
 
 """
@@ -252,6 +237,31 @@ def write_delta_to_file(deltaOutput, deltas):
         deltaFile.write(deltas[i].__str__() + "\n")
     deltaFile.close()
 
+def plot_points(points, corrections):
+    fig = plt.figure().add_subplot(projection='3d')
+    ##plot overlaid graphs
+    fig.plot3D(points[:,0], points[:,1], points[:,2], "ko", markersize=1)
+    fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "ro", markersize=5)
+    fig.plot3D(corrections[:,0], corrections[:,1], corrections[:,2], "r", markersize=5)
+    
+    plt.show()
+
+    ##plot side by side graphs
+    plt.subplot(1,3,1)
+    plt.title("Original Data Points")
+    plt.plot(points[:,0], points[:,1], "ko", markersize=1)
+    plt.subplot(1,3,2)
+    plt.title("Correction Points")
+    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
+    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
+    plt.subplot(1,3,3)
+    plt.title("Original and Correction Points Overlaid")
+    plt.plot(points[:,0], points[:,1], "ko", markersize=1)
+    plt.plot(corrections[:,0], corrections[:,1], "ro", markersize=5)
+    plt.plot(corrections[:,0], corrections[:,1], "r", markersize=5)
+    plt.tight_layout(pad=3)
+    plt.show()
+    print("Plot Generated!")
 
 #main start
 if __name__ == '__main__':

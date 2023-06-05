@@ -2,9 +2,11 @@
     <arg name="outputFile" default=""/>
     <arg name="inputFile" default=""/>
     <arg name="outPointSpacing" default=""/>
+    <arg name="display" default=""/> <!--Default is true, any input will disable display-->
     <node pkg="points_testing" name="points_corrector" type="points_corrector.py" output="screen">
         <param name="outputFile" value="$(arg outputFile)"/>
         <param name="inputFile" value="$(arg inputFile)"/>
         <param name="outPointSpacing" value="$(arg outPointSpacing)"/>
+        <param name="display" value="$(arg display)"/>
     </node>
 </launch>
