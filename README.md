@@ -2,8 +2,10 @@
 
 ## Workspace Setup
 <p>
+
+These programs depend on ROS (tested for noetic)
   
-Clone this repo into the src folder of your catkin workspace. 
+Clone this repo into the src folder of your catkin workspace and build using catkin_make
   
 Create a new virtual enviroment with: <code>python -m venv venv</code>
 and activate it with <code>source venv/bin/activate</code>
