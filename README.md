@@ -2,8 +2,10 @@
 
 ## Workspace Setup
 <p>
+
+These programs depend on ROS (tested for noetic)
   
-Clone this repo into the src folder of your catkin workspace. 
+Clone this repo into the src folder of your catkin workspace and build using catkin_make
   
 Create a new virtual enviroment with: <code>python -m venv venv</code>
 and activate it with <code>source venv/bin/activate</code>
@@ -24,7 +26,7 @@ inputFile - (string) the input file name (not the path). The path of the file sh
 
 outputFile - (string) the output file name (not the path). The file will be created as points_data/[fileName]
 
-outPointSpacing - (double) the maximum distance that the line between two corrected points can vary from the original points
+outPointSpacing - (double) the maximum distance that the path between two corrected points can vary from the original points
 
 display - (string) defaults to true, putting anything here will disable the graph and only output the corrected points (MatPlotLib only)
 <br> 
