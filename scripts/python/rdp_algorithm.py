@@ -21,7 +21,7 @@ def rdp_run(points_list, epsilon):
         if d > max:
             max = d
             index = i
-
+ 
     #find next smallest gap
     if max > epsilon:
         results1 = rdp_run(points_list[:index+1], epsilon)

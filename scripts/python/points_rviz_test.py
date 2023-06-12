@@ -4,7 +4,7 @@ import os
 #sources ros so that packages can be found
 ros_version = os.environ.get('ROS_DISTRO')
 sys.path.append('/opt/ros/' + ros_version + '/lib/python3/dist-packages')
-
+ 
 import rospy
 from visualization_msgs.msg import MarkerArray
 from visualization_msgs.msg import Marker

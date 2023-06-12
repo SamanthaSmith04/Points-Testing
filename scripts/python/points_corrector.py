@@ -51,7 +51,7 @@ def curve_test3D(outPointSpacing, inputFileName, outputFileName, minYValue, maxY
     else:
         print("Generating points...")
         points = generatePoints(minYValue, maxYValue, inPointSpacing) ##GENERATE POINTS
-        #points= generate_raster(inPointSpacing) ##GENERATE RASTER
+        points= generate_raster(inPointSpacing) ##GENERATE RASTER
         print(len(points).__str__() + " points generated!")
 
     corrections = correctPoints(points, outPointSpacing)
